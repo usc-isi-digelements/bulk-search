@@ -1,0 +1,541 @@
+<!--
+Copyright 2017 Next Century Corporation
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../button-action/button-action.html">
+<link rel="import" href="../file-upload/file-upload.html">
+<link rel="import" href="../fontawesome-iconset/fa-all.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../paper-input/paper-textarea.html">
+<link rel="import" href="../paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../styled-dialog/styled-dialog.html">
+<link rel="import" href="../terms-transformer/terms-transformer.html">
+<link rel="import" href="../phone-behavior/phone-behavior.html">
+<link rel="import" href="../lodash/dist/lodash.html">
+<link rel="import" href="../../behaviors/behaviors.html">
+
+<dom-module id="bulk-search">
+  <template>
+    <style include="iron-flex"></style>
+
+    <style>
+      :host {
+        display: block;
+      }
+
+      iron-icon {
+        padding: 8px;
+      }
+
+      .hide {
+        display: none;
+      }
+
+      paper-dropdown-menu {
+        --paper-dropdown-menu-input: {
+          width: 400px;
+        };
+        --paper-menu-button-dropdown: {
+          width: 400px;
+        }
+      }
+
+      paper-listbox {
+        --paper-listbox: {
+          padding: 0;
+        };
+      }
+
+      paper-item {
+        --paper-item: {
+          cursor: pointer;
+          white-space: nowrap;
+        }
+      }
+
+      /* Apply DIG Element button styling to the file upload button. */
+      file-upload ::content paper-button {
+        @apply(--shadow-elevation-4dp);
+        font-size: 14px;
+        line-height: 20px;
+        margin: 0;
+        padding: 5px 10px;
+      }
+
+      /* Apply DIG Element button styling to the file upload button. */
+      file-upload ::content paper-button:hover {
+        @apply(--shadow-elevation-8dp);
+      }
+
+      file-upload ::content #UploadBorder {
+        margin: 10px;
+      }
+
+      button-action.active ::content paper-button {
+        background-color: #00ff00;
+      }
+
+      .warning.message {
+        color: #ff0000;
+      }
+    </style>
+
+    <terms-transformer category="[[_getCategory(searchFields, searchFieldsKeyProperty, searchFieldsTitleProperty, parameterKey)]]" search-default-value="optional"></terms-transformer>
+
+    <styled-dialog id="bulkSearchDialog" header="Upload or Enter Search Terms" fill>
+      <div class="layout horizontal">
+        <div class="layout vertical styled-dialog-right-space">
+          <span class="styled-dialog-name styled-dialog-tall styled-dialog-right-space">Instructions</span>
+          <span class="styled-dialog-name styled-dialog-tall styled-dialog-right-space">Supported file types</span>
+          <span class="styled-dialog-name styled-dialog-tall styled-dialog-right-space">Supported delimiters</span>
+        </div>
+        <div class="layout vertical">
+          <span class="styled-dialog-tall styled-dialog-text">Please enter or paste search terms in the text box below or upload your own files.</span>
+          <span class="styled-dialog-tall styled-dialog-text">plain text files (including .csv and .txt)</span>
+          <span class="styled-dialog-tall styled-dialog-text">commas, semicolons, whitespace (including spaces, tabs, and newlines)</span>
+        </div>
+      </div>
+
+      <div class="styled-dialog-divider"></div>
+
+      <paper-dropdown-menu class="layout horizontal" label="Field" invalid="[[!parameterKey]]" no-label-float>
+        <paper-listbox class="dropdown-content" attr-for-selected="value" selected="{{parameterKey}}">
+          <template is="dom-repeat" items="[[_sortedSearchFields]]">
+            <paper-item role="menuitem" id$="[[_getProperty(item, searchFieldsKeyProperty)]]" value="[[_getProperty(item, searchFieldsKeyProperty)]]">
+              <span>[[_getProperty(item, searchFieldsTitleProperty)]]</span>
+            </paper-item>
+          </template>
+        </paper-listbox>
+      </paper-dropdown-menu>
+
+      <div class="layout horizontal">
+        <span class="styled-dialog-tall styled-dialog-text styled-dialog-right-space">Reset Search Terms?</span>
+        <span class="styled-dialog-tall styled-dialog-text styled-dialog-right-space">[[_yesOrNo(_resetSearchParameters)]]</span>
+        <paper-toggle-button checked="{{_resetSearchParameters}}" title="Reset Search Terms"></paper-toggle-button>
+      </div>
+
+      <div class="styled-dialog-divider"></div>
+
+      <paper-textarea label="Enter or Paste Search Terms" value="{{_termsInput}}" no-label-float on-input="_handleParameterKeyOrTermsInputChange"></paper-textarea>
+
+      <div class="layout horizontal center">
+        <file-upload
+          id="fileUpload"
+          droppable
+          method="POST"
+          raised
+          target="/upload"
+          on-before-upload="_clearFileList"
+          on-error="_setUploadErrorMessage"
+          on-success="_setTermsInputWithFileText">Upload File...
+        </file-upload>
+
+        <span class="styled-dialog-text">[[_uploadText]]</span>
+      </div>
+
+      <div class="layout horizontal">
+        <button-action
+          class$="styled-dialog-tall styled-dialog-right-space [[_getButtonStyleClass('clean', _cleanInput, parameterKey, _termsInput)]]"
+          disabled="[[_disableCleanButton(parameterKey, _termsInput)]]"
+          icon="fa:wrench"
+          text="Clean"
+          click-listener="[[_createCleanListener()]]">
+        </button-action>
+
+        <button-action
+          class$="styled-dialog-tall styled-dialog-right-space [[_getButtonStyleClass('search', _cleanInput, parameterKey, _termsInput)]]"
+          disabled="[[!_cleanInput]]"
+          icon="fa:search"
+          text="Search"
+          click-listener="[[_createSearchListener()]]">
+        </button-action>
+
+        <button-action
+          class="styled-dialog-tall styled-dialog-right-space"
+          icon="fa:undo"
+          text="Reset"
+          click-listener="[[_createResetListener()]]">
+        </button-action>
+
+        <iron-icon class$="[[_getWarningMessageStyleClass(parameterKey, _termsInput)]]" icon="icons:warning"></iron-icon>
+        <span class$="styled-dialog-tall styled-dialog-text [[_getWarningMessageStyleClass(parameterKey, _termsInput)]]">You must select a Field before you may Search.</span>
+
+        <iron-icon class$="[[_getWarningMessageStyleClass(_cleanInput, _termsInput)]]" icon="icons:warning"></iron-icon>
+        <span class$="styled-dialog-tall styled-dialog-text [[_getWarningMessageStyleClass(_cleanInput, _termsInput)]]">You must Clean before you may Search.</span>
+      </div>
+    </styled-dialog>
+  </template>
+
+  <script>
+  (function() {
+    'use strict';
+
+    /* globals DigBehaviors */
+    Polymer({
+      is: 'bulk-search',
+
+      behaviors: [DigBehaviors.PhoneBehavior, DigBehaviors.StateBehavior],
+
+      properties: {
+        /**
+         * The chosen key in the `searchParameters`.
+         *
+         * @type {String}
+         */
+        parameterKey: {
+          observer: '_handleParameterKeyOrTermsInputChange',
+          type: String,
+          value: ''
+        },
+
+        /**
+         * Whether DIG may process the current query request.
+         *
+         * @type {Boolean}
+         */
+        processRequest: {
+          notify: true,
+          type: Boolean
+        },
+
+        /**
+         * The list of search field objects to show in the dropdown menu.
+         *
+         * @type {Array}
+         */
+        searchFields: {
+          type: Array
+        },
+
+        /**
+         * The property in the search field objects for the key.
+         *
+         * @type {String}
+         * @default 'key'
+         */
+        searchFieldsKeyProperty: {
+          type: String,
+          value: 'key'
+        },
+
+        /**
+         * The property in the search field objects for the title.
+         *
+         * @type {String}
+         * @default 'title'
+         */
+        searchFieldsTitleProperty: {
+          type: String,
+          value: 'title'
+        },
+
+        /**
+         * The search parameters.
+         *
+         * @type {Object}
+         */
+        searchParameters: {
+          notify: true,
+          type: Object
+        },
+
+        /**
+         * Whether the terms input is clean.
+         *
+         * @type {Boolean}
+         * @default false
+         * @private
+         */
+        _cleanInput: {
+          type: Boolean,
+          value: false
+        },
+
+        /**
+         * Whether to reset all the searchParameters whenever a search is run.
+         *
+         * @type {Boolean}
+         * @default true
+         */
+        _resetSearchParameters: {
+          type: Boolean,
+          value: true
+        },
+
+        /**
+         * The sorted list of search fields.
+         *
+         * @type {Array}
+         * @private
+         */
+        _sortedSearchFields: {
+          computed: '_sortSearchFields(searchFields, searchFieldsTitleProperty)',
+          type: Array
+        },
+
+        /**
+         * The terms input for the dialog.
+         *
+         * @type {String}
+         * @default ''
+         * @private
+         */
+        _termsInput: {
+          type: String,
+          value: ''
+        },
+
+        /**
+         * The text to show about a file upload.
+         *
+         * @type {String}
+         * default ''
+         * @private
+         */
+        _uploadText: {
+          type: String,
+          value: ''
+        }
+      },
+
+      /**
+       * Resets the uploaded file list.
+       *
+       * @event before-upload
+       * @private
+       */
+      _clearFileList: function() {
+        this.$$('#fileUpload').clear();
+      },
+
+      /**
+       * Returns the on-click listener object for the search button-action.
+       *
+       * @return {Object}
+       * @private
+       */
+      _createCleanListener: function() {
+        var self = this;
+        return {
+          onClick: function() {
+            if(self.parameterKey && self._termsInput) {
+              // TODO Clean other types?
+              if(self.parameterKey === 'phone') {
+                // From DigBehaviors.PhoneBehavior
+                self._termsInput = self.getUnformattedPhones(self._termsInput);
+              }
+              self._cleanInput = true;
+            }
+          }
+        };
+      },
+
+      /**
+       * Returns the on-click listener object for the search button-action.
+       *
+       * @return {Object}
+       * @private
+       */
+      _createSearchListener: function() {
+        var self = this;
+        return {
+          onClick: function() {
+            if(self.parameterKey && self._termsInput && self._cleanInput) {
+              var termsTransformer = self.$$('terms-transformer');
+              var termsArray = self._termsInput.replace(/\n/g, ' ').split(' ');
+              var termsParameter = termsTransformer.createObjectFromList(termsArray);
+              self.$$('#bulkSearchDialog').close();
+              self.set('processRequest', false);
+              if(self._resetSearchParameters) {
+                var parameters = {};
+                parameters[self.parameterKey] = termsParameter;
+                // From DigBehaviors.StateBehavior
+                self.set('searchParameters', self.buildSearchState(parameters));
+              } else {
+                self.set('searchParameters.' + self.parameterKey, termsParameter);
+              }
+              self.set('processRequest', true);
+              self.set('_termsInput', '');
+              self.set('_uploadText', '');
+              self.$$('#fileUpload').clear();
+            }
+          }
+        };
+      },
+
+      /**
+       * Returns the on-click listener object for the reset button-action.
+       *
+       * @return {Object}
+       * @private
+       */
+      _createResetListener: function() {
+        var self = this;
+        return {
+          onClick: function() {
+            self.set('_uploadText', '');
+            self.set('_termsInput', '');
+            self.set('_cleanInput', false);
+            self.$$('#fileUpload').clear();
+          }
+        };
+      },
+
+      /**
+       * Returns whether to disable the clean button.
+       *
+       * @param {String} parameterKey
+       * @param {String} termsInput
+       * @return {Boolean}
+       * @private
+       */
+      _disableCleanButton: function(parameterKey, termsInput) {
+        return !parameterKey || !termsInput;
+      },
+
+      /**
+       * Returns the style class for the button of the given type.
+       *
+       * @param {String} type
+       * @param {Boolean} cleanInput
+       * @param {String} parameterKey
+       * @param {String} termsInput
+       * @return {String}
+       * @private
+       */
+      _getButtonStyleClass: function(type, cleanInput, parameterKey, termsInput) {
+        if(type === 'clean') {
+          return (!!termsInput && !!parameterKey && !cleanInput ? 'active' : '');
+        }
+        if(type === 'search') {
+          return (!!termsInput && !!parameterKey && cleanInput ? 'active' : '');
+        }
+        return '';
+      },
+
+      /**
+       * Returns the category of the search field with the given parameter key.
+       *
+       * @param {Array} searchFields
+       * @param {String} keyProperty
+       * @param {String} titleProperty
+       * @param {String} parameterKey
+       * @return {String}
+       * @private
+       */
+      _getCategory: function(searchFields, keyProperty, titleProperty, parameterKey) {
+        for(var i = 0; i < searchFields.length; ++i) {
+          if(searchFields[i][keyProperty] === parameterKey) {
+            return searchFields[i][titleProperty];
+          }
+        }
+        return undefined;
+      },
+
+      /**
+       * Returns the given property in the given item.
+       *
+       * @param {Object} item
+       * @param {String} property
+       * @return {Object}
+       * @private
+       */
+      _getProperty: function(item, property) {
+        return item[property];
+      },
+
+      /**
+       * Returns the style class for whether to show or hide the warning message icon and text.
+       *
+       * @param {Boolean|String} prerequisite
+       * @param {String} termsInput
+       * @return {String}
+       * @private
+       */
+      _getWarningMessageStyleClass: function(prerequisite, termsInput) {
+        return (!prerequisite && termsInput) ? 'warning message' : 'hide';
+      },
+
+      /**
+       * Handles change in the parameter key or terms input.  Sets _cleanInput to false.
+       *
+       * @private
+       */
+      _handleParameterKeyOrTermsInputChange: function() {
+        this._cleanInput = false;
+      },
+
+      /**
+       * Sets the terms input in the dialog with the file text.
+       *
+       * @event success
+       * @private
+       */
+      _setTermsInputWithFileText: function(event) {
+        if(event.detail && event.detail.xhr && event.detail.xhr.response) {
+          this._uploadText = 'File upload successful!';
+          this._termsInput = (this._termsInput || '') + event.detail.xhr.response;
+          this._cleanInput = false;
+        }
+      },
+
+      /**
+       * Sets the upload error message.
+       *
+       * @event error
+       * @private
+       */
+      _setUploadErrorMessage: function() {
+        this._uploadText = 'File upload failed!';
+      },
+
+      /**
+       * Returns the sorted list of search fields.
+       *
+       * @param {Array} searchFields
+       * @param {String} titleProperty
+       * @return {Array}
+       * @private
+       */
+      _sortSearchFields: function(searchFields, titleProperty) {
+        // Use concat to create a copy.
+        return searchFields.concat().sort(function(a, b) {
+          return a[titleProperty].localeCompare(b[titleProperty]);
+        });
+      },
+
+      /**
+       * Returns Yes if the input is true and No otherwise.
+       *
+       * @param {Boolean} value
+       * @return {String}
+       * @private
+       */
+      _yesOrNo: function(value) {
+        return value ? 'Yes' : 'No';
+      },
+
+      /**
+       * Opens the dialog.
+       */
+      open: function() {
+        this.$$('#bulkSearchDialog').open();
+      }
+    });
+  })();
+  </script>
+</dom-module>
