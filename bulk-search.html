@@ -125,7 +125,7 @@ limitations under the License.
       <div class="layout horizontal">
         <span class="styled-dialog-tall styled-dialog-text styled-dialog-right-space">Reset Search Terms?</span>
         <span class="styled-dialog-tall styled-dialog-text styled-dialog-right-space">[[_yesOrNo(_resetSearchParameters)]]</span>
-        <paper-toggle-button checked="{{_resetSearchParameters}}" title="Reset Search Terms"></paper-toggle-button>
+        <paper-toggle-button checked="{{_resetSearchParameters}}" disabled="[[disableResetFields]]" title="Reset Search Terms"></paper-toggle-button>
       </div>
 
       <div class="styled-dialog-divider"></div>
@@ -191,6 +191,15 @@ limitations under the License.
       behaviors: [DigBehaviors.PhoneBehavior, DigBehaviors.StateBehavior],
 
       properties: {
+        
+        /**
+         * Whether the reset search fields is disabled.
+         */
+        disableResetFields: {
+          type: Boolean,
+          value: false
+        },
+
         /**
          * The chosen key in the `searchParameters`.
          *
