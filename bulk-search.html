@@ -373,7 +373,7 @@ limitations under the License.
                 var parameters = {};
                 parameters[self.parameterKey] = termsParameter;
                 // From DigBehaviors.StateBehavior
-                self.set('searchParameters', self.buildSearchState(parameters));
+                self.set('searchParameters', self.buildSearchState(parameters, self.searchParameters));
               } else {
                 self.set('searchParameters.' + self.parameterKey, termsParameter);
               }
