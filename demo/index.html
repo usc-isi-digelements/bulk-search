@@ -1,0 +1,159 @@
+<!--
+Copyright 2017 Next Century Corporation
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
+  <link rel="import" href="../bulk-search.html">
+  <link rel="import" href="../../selected-facets-display/selected-facets-display.html">
+
+</head>
+
+<body unresolved>
+    <template is="dom-bind" id="demo">
+      <div>
+        <p>bulk-search demo (used along with selected-facets-display):</p>
+
+        <p>Search Fields: [[printObject(searchFields, true)]]</br>
+        <p>Parameter Key: [[printObject(searchFields.1.key)]]</br>
+
+        <br/><br/>
+
+        <paper-icon-item title="Upload a File with Search Terms or Copy & Paste Text" on-tap="openBulkSearchDialog">
+          <iron-icon icon="file-upload" item-icon></iron-icon>
+          Bulk Search from File or Text
+        </paper-icon-item>        
+        <bulk-search
+          id="bulkSearchDialog"
+          search-fields="[[searchFields]]"
+          parameter-key="[[searchFields.1.key]]"
+          search-parameters="{{searchParameters}}"
+          process-request="{{processRequest}}">
+        </bulk-search>
+        Search Parameters: [[printObject(searchParameters)]]</br>
+        Process Request: [[processRequest]]
+      </div>
+    </template>
+    <script>
+      (function(document) {
+        var demo = document.querySelector('#demo');
+        demo.displayEmpty = function() {
+          if(!Object.keys(demo.facets.dates).length ||
+            (demo.facets.dates[demo.dateKey] && !demo.facets.dates[demo.dateKey].enabled)) {
+            return 'None';
+          }
+        };
+        demo.openBulkSearchDialog = function() {
+          demo.$.bulkSearchDialog.open();
+        };
+        var printObject = function (obj, pretty) {
+          var out = "";
+          //If array
+          var prettyPrint = function() {
+            if(pretty) {out+="</br></br>"}
+          }
+          if(Array.isArray(obj)) {
+            out += "[";
+            prettyPrint();
+            obj.map( function(item, index){
+              if(index >0){
+                out += ","
+                prettyPrint();
+              }
+              out += printObject(item, pretty);
+            });
+            out += "]";
+            prettyPrint();
+          }
+          // If object
+          else if(typeof obj == "object") {
+            out += "{";
+            prettyPrint();
+            var first = true;
+            out += Object.keys(obj);
+            for (var [key, value] of Object.entries(obj)) {
+              if(!first){
+                out += ",";
+                prettyPrint();
+              }
+              out += key + ": " +printObject(value, pretty);
+            }
+            out += "}";
+            prettyPrint();
+          }
+          //Primitive
+          else {
+            out += obj + "*"+typeof(obj)+"*";
+          }
+
+          return out;
+        }
+        demo.printObject = printObject;
+        var transFunc = function() {
+          return function (response, key) {
+            console.log("hey"+response);
+            return response;
+          };
+        };
+        demo.searchFields = [{
+          color: "cyan",
+          dateProperties: {},
+          facetTransform: transFunc(),
+          facets: true,
+          field:"knowledge_graph.caliber_gauge.key",
+          icon:"maps:local-offer",
+          key:"caliber_gauge",
+          link:"entity",
+          queryField:"knowledge_graph.caliber_gauge.value",
+          result:"header",
+          search:true,
+          sort: {
+            sortId:1,
+            sortType:"entity"
+          },
+          styleClass:"entity-cyan",
+          title:"Caliber or Gauge",
+          titlePlural:"Calibers or Gauges",
+          type:"string",
+        },
+        {
+          color: "pink",
+          dateProperties: {},
+          facetTransform: transFunc(),
+          facets: true,
+          field:"knowledge_graph.city.key",
+          icon:"maps:place",
+          key:"city",
+          link:"entity",
+          queryField:"knowledge_graph.city.value",
+          result:"header",
+          search:true,
+          sort: {
+            sortId:1,
+            sortType:"entity"
+          },
+          styleClass:"entity-pink",
+          title:"City",
+          titlePlural:"Cities",
+          type:"location",
+        }];
+
+      })(document);
+    </script>
+</body>
+</html>
