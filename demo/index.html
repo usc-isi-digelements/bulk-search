@@ -18,41 +18,16 @@ limitations under the License.
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-  <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
+  <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
   <link rel="import" href="../bulk-search.html">
   <link rel="import" href="../../selected-facets-display/selected-facets-display.html">
-
 </head>
 
 <body unresolved>
-    <template is="dom-bind" id="demo">
-      <div>
-        <p>bulk-search demo (used along with selected-facets-display):</p>
-
-        <p>Search Fields: [[stringify(searchFields)]]</br>
-        <p>Parameter Key: [[stringify(searchFields.0.key)]]</br>
-
-        <br/><br/>
-
-        <paper-icon-item title="Upload a File with Search Terms or Copy & Paste Text" on-tap="openBulkSearchDialog">
-          <iron-icon icon="file-upload" item-icon></iron-icon>
-          Bulk Search from File or Text
-        </paper-icon-item>        
-        <bulk-search
-          id="bulkSearchDialog"
-          search-fields="[[searchFields]]"
-          parameter-key="[[searchFields.0.key]]"
-          search-parameters="{{searchParameters}}"
-          process-request="{{processRequest}}"
-          build-search-state="[[buildSearchState]]">
-        </bulk-search>
-        Search Parameters: [[stringify(searchParameters)]]</br>
-        Process Request: [[processRequest]]
-      </div>
-    </template>
+  <dom-bind>
     <script>
       (function(document) {
-        var demo = document.querySelector('#demo');
+        var demo = document.querySelector('dom-bind');
         demo.displayEmpty = function() {
           if(!Object.keys(demo.facets.dates).length ||
             (demo.facets.dates[demo.dateKey] && !demo.facets.dates[demo.dateKey].enabled)) {
@@ -131,5 +106,31 @@ limitations under the License.
         };
       })(document);
     </script>
+    <template is="dom-bind" id="demo">
+      <div>
+        <p>bulk-search demo (used along with selected-facets-display):</p>
+
+        <p>Search Fields: [[stringify(searchFields)]]</p>
+        <p>Parameter Key: [[stringify(searchFields.0.key)]]</p>
+
+        <br/><br/>
+
+        <paper-icon-item title="Upload a File with Search Terms or Copy & Paste Text" on-tap="openBulkSearchDialog">
+          <iron-icon icon="file-upload" item-icon></iron-icon>
+          Bulk Search from File or Text
+        </paper-icon-item>        
+        <bulk-search
+          id="bulkSearchDialog"
+          search-fields="[[searchFields]]"
+          parameter-key="[[searchFields.0.key]]"
+          search-parameters="{{searchParameters}}"
+          process-request="{{processRequest}}"
+          build-search-state="[[buildSearchState]]">
+        </bulk-search>
+        Search Parameters: [[stringify(searchParameters)]]</br>
+        Process Request: [[processRequest]]
+      </div>
+    </template>
+  </dom-bind>
 </body>
 </html>

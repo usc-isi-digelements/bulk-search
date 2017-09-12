@@ -16,7 +16,7 @@ limitations under the License.
 
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../button-action/button-action.html">
-<link rel="import" href="../file-upload/file-upload.html">
+<link rel="import" href="../vaadin-upload/vaadin-upload.html">
 <link rel="import" href="../fontawesome-iconset/fa-all.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
@@ -194,16 +194,14 @@ var searchFields = [{
       <paper-textarea label="Enter or Paste Search Terms" value="{{_termsInput}}" no-label-float on-input="_handleParameterKeyOrTermsInputChange"></paper-textarea>
 
       <div class="layout horizontal center">
-        <file-upload
+        <vaadin-upload
           id="fileUpload"
-          droppable
           method="POST"
           raised
-          target="/upload"
-          on-before-upload="_clearFileList"
+          target="localhost:9000/upload"
           on-error="_setUploadErrorMessage"
-          on-success="_setTermsInputWithFileText">Upload File...
-        </file-upload>
+          on-success="_setTermsInputWithFileText">
+        </vaadin-upload>
 
         <span class="styled-dialog-text">[[_uploadText]]</span>
       </div>
@@ -252,6 +250,15 @@ var searchFields = [{
 
       behaviors: [DigBehaviors.PhoneBehavior],
 
+      ready: function () {
+        this.$$('#fileUpload').clear = function () {
+          while(this.files.length) {
+            console.log(this.files);
+            this._removeFile(this.files[0]);
+          }
+          console.log(this.files);
+        }
+      },
       properties: {
 
         /**
@@ -391,16 +398,6 @@ var searchFields = [{
           type: String,
           value: ''
         }
-      },
-
-      /**
-       * Resets the uploaded file list.
-       *
-       * @event before-upload
-       * @private
-       */
-      _clearFileList: function() {
-        this.$$('#fileUpload').clear();
       },
 
       /**

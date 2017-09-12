@@ -1,7 +1,7 @@
 {
   "name": "bulk-search",
   "description": "A Polymer element that allows multiple searches simultaneously.",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "authors": [
     "Next Century Corporation"
   ],
@@ -17,22 +17,24 @@
     "/test/"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.7.0",
-    "button-action": "DigElements/button-action#^1.0.3",
-    "file-upload": "DigElements/file-upload#^2.2.2",
-    "fontawesome-iconset": "https://github.com/vangware/fontawesome-iconset.git#7f5826f89bac4e6d4fa61f64a9fe13978aaa7b38",
-    "iron-flex-layout": "PolymerElements/iron-flex-layout#1.3.1",
-    "iron-icons": "PolymerElements/iron-icons#^1.1.3",
-    "paper-elements": "PolymerElements/paper-elements#^1.0.7",
-    "styled-dialog": "DigElements/styled-dialog#1.0.3",
-    "terms-transformer": "DigElements/terms-transformer#1.1.3",
+    "polymer": "Polymer/polymer#^2.0.2",
+    "button-action": "DigElements/button-action#^2.0.0",
+    "vaadin-upload": "vaadin/vaadin-upload#2.1.0",
+    "fontawesome-iconset": "https://github.com/vangware/fontawesome-iconset.git#09ac70f619bb44d73fefc5f9524ae29ab217ed15",
+    "iron-flex-layout": "PolymerElements/iron-flex-layout#2.0.0",
+    "iron-icon": "PolymerElements/iron-icon#^2.0.1",
+    "iron-icons": "PolymerElements/iron-icons#^2.0.1",
+    "paper-input": "PolymerElements/paper-input#^2.0.2",
+    "paper-toggle-button": "PolymerElements/paper-toggle-button#^2.0.0",
+    "styled-dialog": "DigElements/styled-dialog#2.0.2",
+    "terms-transformer": "DigElements/terms-transformer#2.0.0",
     "phone-behavior": "DigElements/phone-behavior#1.0.0",
     "lodash-import": "DigElements/lodash-import#~1.0.1"
   },
   "devDependencies": {
-    "iron-component-page": "PolymerElements/iron-component-page#^1.1.7",
-    "selected-facets-display": "DigElements/selected-facets-display#^1.0.12",
-    "web-component-tester": "^5.0.0"
+    "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
+    "selected-facets-display": "DigElements/selected-facets-display#^2.0.1",
+    "web-component-tester": "^6.0.0"
   },
   "resolutions": {
     "lodash": "~4.17.2"
