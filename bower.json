@@ -1,7 +1,7 @@
 {
   "name": "bulk-search",
   "description": "A Polymer element that allows multiple searches simultaneously.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "authors": [
     "Next Century Corporation"
   ],
@@ -25,7 +25,7 @@
     "iron-icons": "PolymerElements/iron-icons#^1.1.3",
     "paper-elements": "PolymerElements/paper-elements#^1.0.7",
     "styled-dialog": "DigElements/styled-dialog#1.0.3",
-    "terms-transformer": "DigElements/terms-transformer#1.1.1",
+    "terms-transformer": "DigElements/terms-transformer#1.1.3",
     "phone-behavior": "DigElements/phone-behavior#1.0.0",
     "lodash-import": "DigElements/lodash-import#~1.0.1"
   },

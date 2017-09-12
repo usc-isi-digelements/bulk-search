@@ -59,10 +59,10 @@ limitations under the License.
             return 'None';
           }
         };
+
         demo.openBulkSearchDialog = function() {
           demo.$.bulkSearchDialog.open();
         };
-      
 
         demo.buildSearchState = function(config, oldConfig) {
           var state = {};
@@ -74,9 +74,13 @@ limitations under the License.
 
         var transFunc = function() {
           return function (response, key) {
-            console.log("hey"+response);
             return response;
           };
+        };
+
+        demo.searchParameters = {
+          caliber_gauge: {},
+          city: {}
         };
 
         demo.searchFields = [{
@@ -121,7 +125,6 @@ limitations under the License.
           titlePlural:"Cities",
           type:"location",
         }];
-
 
         demo.stringify = function(data) {
           return JSON.stringify(data);
