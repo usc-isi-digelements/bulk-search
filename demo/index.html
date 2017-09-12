@@ -29,8 +29,8 @@ limitations under the License.
       <div>
         <p>bulk-search demo (used along with selected-facets-display):</p>
 
-        <p>Search Fields: [[printObject(searchFields, true)]]</br>
-        <p>Parameter Key: [[printObject(searchFields.1.key)]]</br>
+        <p>Search Fields: [[stringify(searchFields)]]</br>
+        <p>Parameter Key: [[stringify(searchFields.0.key)]]</br>
 
         <br/><br/>
 
@@ -41,11 +41,12 @@ limitations under the License.
         <bulk-search
           id="bulkSearchDialog"
           search-fields="[[searchFields]]"
-          parameter-key="[[searchFields.1.key]]"
+          parameter-key="[[searchFields.0.key]]"
           search-parameters="{{searchParameters}}"
-          process-request="{{processRequest}}">
+          process-request="{{processRequest}}"
+          build-search-state="[[buildSearchState]]">
         </bulk-search>
-        Search Parameters: [[printObject(searchParameters)]]</br>
+        Search Parameters: [[stringify(searchParameters)]]</br>
         Process Request: [[processRequest]]
       </div>
     </template>
@@ -61,55 +62,23 @@ limitations under the License.
         demo.openBulkSearchDialog = function() {
           demo.$.bulkSearchDialog.open();
         };
-        var printObject = function (obj, pretty) {
-          var out = "";
-          //If array
-          var prettyPrint = function() {
-            if(pretty) {out+="</br></br>"}
-          }
-          if(Array.isArray(obj)) {
-            out += "[";
-            prettyPrint();
-            obj.map( function(item, index){
-              if(index >0){
-                out += ","
-                prettyPrint();
-              }
-              out += printObject(item, pretty);
-            });
-            out += "]";
-            prettyPrint();
-          }
-          // If object
-          else if(typeof obj == "object") {
-            out += "{";
-            prettyPrint();
-            var first = true;
-            out += Object.keys(obj);
-            for (var [key, value] of Object.entries(obj)) {
-              if(!first){
-                out += ",";
-                prettyPrint();
-              }
-              out += key + ": " +printObject(value, pretty);
-            }
-            out += "}";
-            prettyPrint();
-          }
-          //Primitive
-          else {
-            out += obj + "*"+typeof(obj)+"*";
-          }
+      
 
-          return out;
-        }
-        demo.printObject = printObject;
+        demo.buildSearchState = function(config, oldConfig) {
+          var state = {};
+          _.keys(oldConfig).forEach(function(key) {
+            state[key] = config[key] || {};
+          });
+          return state;
+        };
+
         var transFunc = function() {
           return function (response, key) {
             console.log("hey"+response);
             return response;
           };
         };
+
         demo.searchFields = [{
           color: "cyan",
           dateProperties: {},
@@ -153,6 +122,10 @@ limitations under the License.
           type:"location",
         }];
 
+
+        demo.stringify = function(data) {
+          return JSON.stringify(data);
+        };
       })(document);
     </script>
 </body>

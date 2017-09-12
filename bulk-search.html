@@ -26,7 +26,6 @@ limitations under the License.
 <link rel="import" href="../terms-transformer/terms-transformer.html">
 <link rel="import" href="../phone-behavior/phone-behavior.html">
 <link rel="import" href="../lodash/dist/lodash.js">
-<link rel="import" href="../../behaviors/behaviors.html">
 
 <!--
 A Polymer element that allows multiple searches simultaneously.
@@ -246,14 +245,25 @@ var searchFields = [{
   (function() {
     'use strict';
 
-    /* globals DigBehaviors */
     Polymer({
+      /* globals DigBehaviors */
+
       is: 'bulk-search',
 
-      behaviors: [DigBehaviors.PhoneBehavior, DigBehaviors.StateBehavior],
+      behaviors: [DigBehaviors.PhoneBehavior],
 
       properties: {
-        
+
+        /**
+         * Builds and returns the search state object from the given config object.
+         *
+         * @param {Object} config
+         * @return {Object}
+         */
+        buildSearchState: {
+          type: Object
+        },
+
         /**
          * Whether the reset search fields is disabled.
          */
