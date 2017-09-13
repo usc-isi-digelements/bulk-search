@@ -253,14 +253,13 @@ var searchFields = [{
         var uploader = this.$$('#fileUpload');
         uploader.clear = function () {
           while(this.files.length) {
-            console.log(this.files);
             this._removeFile(this.files[0]);
           }
-          console.log(this.files);
         };
 
         uploader.listeners['upload-success'] = '_onUploadSuccess';
         uploader._onUploadSuccess = function(event) {
+          console.log(event);
           this._setTermsInputWithFileText();
         }
       },
@@ -521,6 +520,9 @@ var searchFields = [{
        * @private
        */
       _getCategory: function(searchFields, keyProperty, titleProperty, parameterKey) {
+        if(!searchFields || !keyProperty || !titleProperty || !parameterKey) {
+          return;
+        }
         for(var i = 0; i < searchFields.length; ++i) {
           if(searchFields[i][keyProperty] === parameterKey) {
             return searchFields[i][titleProperty];
@@ -585,6 +587,9 @@ var searchFields = [{
        */
       _sortSearchFields: function(searchFields, titleProperty) {
         // Use concat to create a copy.
+        if(!searchFields || !titleProperty) {
+          return;
+        }
         return searchFields.concat().sort(function(a, b) {
           return a[titleProperty].localeCompare(b[titleProperty]);
         });

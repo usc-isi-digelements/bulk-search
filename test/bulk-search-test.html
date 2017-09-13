@@ -95,8 +95,8 @@ limitations under the License.
     test('does have expected UI elements', function() {
       expect(element.$$('styled-dialog')).to.exist;
       expect(element.$$('styled-dialog').id).to.equal('bulkSearchDialog');
-      expect(element.$$('file-upload')).to.exist;
-      expect(element.$$('file-upload').id).to.equal('fileUpload');
+      expect(element.$$('vaadin-upload')).to.exist;
+      expect(element.$$('vaadin-upload').id).to.equal('fileUpload');
     });
 
     test('does have expected paper elements', function() {
@@ -462,11 +462,6 @@ limitations under the License.
         }
       });
       expect(element._termsInput).to.equal('1234567890');
-    });
-
-    test('_setUploadErrorMessage does set _uploadText', function() {
-      element._setUploadErrorMessage();
-      expect(element._uploadText).to.equal('File upload failed!');
     });
 
     test('_sortSearchFields does return as expected', function() {
