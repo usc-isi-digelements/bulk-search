@@ -199,8 +199,7 @@ var searchFields = [{
           method="POST"
           raised
           target="localhost:9000/upload"
-          on-error="_setUploadErrorMessage"
-          on-success="_setTermsInputWithFileText">
+          upload-success="_setTermsInputWithFileText">
         </vaadin-upload>
 
         <span class="styled-dialog-text">[[_uploadText]]</span>
@@ -251,12 +250,18 @@ var searchFields = [{
       behaviors: [DigBehaviors.PhoneBehavior],
 
       ready: function () {
-        this.$$('#fileUpload').clear = function () {
+        var uploader = this.$$('#fileUpload');
+        uploader.clear = function () {
           while(this.files.length) {
             console.log(this.files);
             this._removeFile(this.files[0]);
           }
           console.log(this.files);
+        };
+
+        uploader.listeners['upload-success'] = '_onUploadSuccess';
+        uploader._onUploadSuccess = function(event) {
+          this._setTermsInputWithFileText();
         }
       },
       properties: {
@@ -565,20 +570,9 @@ var searchFields = [{
        */
       _setTermsInputWithFileText: function(event) {
         if(event.detail && event.detail.xhr && event.detail.xhr.response) {
-          this._uploadText = 'File upload successful!';
           this._termsInput = (this._termsInput || '') + event.detail.xhr.response;
           this._cleanInput = false;
         }
-      },
-
-      /**
-       * Sets the upload error message.
-       *
-       * @event error
-       * @private
-       */
-      _setUploadErrorMessage: function() {
-        this._uploadText = 'File upload failed!';
       },
 
       /**
