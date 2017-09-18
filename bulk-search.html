@@ -174,7 +174,7 @@ var searchFields = [{
       <div class="styled-dialog-divider"></div>
 
       <paper-dropdown-menu class="layout horizontal" label="Field" invalid="[[!parameterKey]]" no-label-float>
-        <paper-listbox class="dropdown-content" attr-for-selected="value" selected="{{parameterKey}}">
+        <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{parameterKey}}">
           <template is="dom-repeat" items="[[_sortedSearchFields]]">
             <paper-item role="menuitem" id$="[[_getProperty(item, searchFieldsKeyProperty)]]" value="[[_getProperty(item, searchFieldsKeyProperty)]]">
               <span>[[_getProperty(item, searchFieldsTitleProperty)]]</span>
