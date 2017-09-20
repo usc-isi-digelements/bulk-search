@@ -20,8 +20,8 @@ limitations under the License.
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../lodash-import/lodash.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../paper-input/paper-textarea.html">
-<link rel="import" href="../paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="../phone-behavior/phone-behavior.html">
 <link rel="import" href="../styled-dialog/styled-dialog.html">
 <link rel="import" href="../styled-dialog/styled-dialog-styles.html">
@@ -136,6 +136,15 @@ var searchFields = [{
         }
       }
 
+      .pointer > * {
+        cursor: pointer;
+      }
+
+      paper-icon-button {
+        border-radius: 50%;
+        padding: 5px;
+      }
+
       paper-textarea {
         width: 99%;
       }
@@ -182,11 +191,12 @@ var searchFields = [{
         </paper-listbox>
       </paper-dropdown-menu>
 
-      <div class="layout horizontal">
-        <span class="styled-dialog-tall styled-dialog-text styled-dialog-right-space">Reset Search Terms?</span>
-        <span class="styled-dialog-tall styled-dialog-text styled-dialog-right-space">[[_yesOrNo(_resetSearchParameters)]]</span>
-        <paper-toggle-button checked="{{_resetSearchParameters}}" disabled="[[disableResetFields]]" title="Reset Search Terms"></paper-toggle-button>
-      </div>
+      <template is="dom-if" if="[[!disableResetFields]]">
+        <div class="layout horizontal center pointer styled-dialog-tall">
+          <paper-icon-button class="styled-dialog-right-space" icon="[[_getCheckboxIcon(_resetTerms)]]" title="Reset Search Terms" on-tap="_toggleResetTerms"></paper-icon-button>
+          <span class="styled-dialog-text styled-dialog-right-space" on-tap="_toggleResetTerms">Reset Search Terms</span>
+        </div>
+      </template>
 
       <div class="styled-dialog-divider"></div>
 
@@ -352,7 +362,7 @@ var searchFields = [{
          * @type {Boolean}
          * @default true
          */
-        _resetSearchParameters: {
+        _resetTerms: {
           type: Boolean,
           value: true
         },
@@ -419,7 +429,7 @@ var searchFields = [{
               var termsParameter = termsTransformer.createObjectFromList(termsArray);
               self.$$('#bulkSearchDialog').close();
               self.set('processRequest', false);
-              if(self._resetSearchParameters) {
+              if(self._resetTerms) {
                 var parameters = {};
                 parameters[self.parameterKey] = termsParameter;
                 // From DigBehaviors.StateBehavior
@@ -507,6 +517,17 @@ var searchFields = [{
       },
 
       /**
+       * Returns the checkbox icon for the given setting.
+       *
+       * @param {Boolean} setting
+       * @return {String}
+       * @private
+       */
+      _getCheckboxIcon: function(setting) {
+        return setting ? 'check-box' : 'check-box-outline-blank';
+      },
+
+      /**
        * Returns the given property in the given item.
        *
        * @param {Object} item
@@ -571,14 +592,12 @@ var searchFields = [{
       },
 
       /**
-       * Returns Yes if the input is true and No otherwise.
+       * Toggles _resetTerms.
        *
-       * @param {Boolean} value
-       * @return {String}
        * @private
        */
-      _yesOrNo: function(value) {
-        return value ? 'Yes' : 'No';
+      _toggleResetTerms: function() {
+        this.set('_resetTerms', !this._resetTerms);
       },
 
       /**

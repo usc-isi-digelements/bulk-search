@@ -80,7 +80,7 @@ limitations under the License.
         phone: {}
       });
       expect(element._cleanInput).to.be.false;
-      expect(element._resetSearchParameters).to.be.true;
+      expect(element._resetTerms).to.be.true;
       expect(element._sortedSearchFields).to.deep.equal([{
         key: 'email',
         title: 'Email Address'
@@ -278,7 +278,7 @@ limitations under the License.
       expect(element._termsInput).to.equal('');
     });
 
-    test('_createSearchListener.onClick with _resetSearchParameters does clear searchParameters', function() {
+    test('_createSearchListener.onClick with _resetTerms does clear searchParameters', function() {
       element.searchParameters = {
         key1: {
           property: 'value1'
@@ -306,8 +306,8 @@ limitations under the License.
       expect(element._termsInput).to.equal('');
     });
 
-    test('_createSearchListener.onClick without _resetSearchParameters does only set searchParameters.phone', function() {
-      element._resetSearchParameters = false;
+    test('_createSearchListener.onClick without _resetTerms does only set searchParameters.phone', function() {
+      element._resetTerms = false;
       element.searchParameters = {
         key1: {
           property: 'value1'
@@ -511,9 +511,12 @@ limitations under the License.
       }]);
     });
 
-    test('_yesOrNo does return as expected', function() {
-      expect(element._yesOrNo(true)).to.equal('Yes');
-      expect(element._yesOrNo(false)).to.equal('No');
+    test('_toggleResetTerms does work as expected', function() {
+      expect(element._resetTerms).to.be.true;
+      element._toggleResetTerms();
+      expect(element._resetTerms).to.be.false;
+      element._toggleResetTerms();
+      expect(element._resetTerms).to.be.true;
     });
 
     test('open() opens the dialog', function(done) {
