@@ -89,14 +89,18 @@ limitations under the License.
         title: 'Telephone Number'
       }]);
       expect(element._termsInput).to.equal('');
-      expect(element._uploadText).to.equal('');
     });
 
-    test('does have expected UI elements', function() {
+    test('does have expected dialog element', function() {
       expect(element.$$('styled-dialog')).to.exist;
       expect(element.$$('styled-dialog').id).to.equal('bulkSearchDialog');
+      expect(element.$$('styled-dialog').fill).to.be.true;
+    });
+
+    test('does have expected upload element', function() {
       expect(element.$$('vaadin-upload')).to.exist;
-      expect(element.$$('vaadin-upload').id).to.equal('fileUpload');
+      expect(element.$$('vaadin-upload').method).to.equal('POST');
+      expect(element.$$('vaadin-upload').target).to.equal('/upload');
     });
 
     test('does have expected paper elements', function() {
@@ -110,6 +114,7 @@ limitations under the License.
       expect(items[1].id).to.equal('phone');
       expect(items[1].value).to.equal('phone');
       expect(items[1].innerHTML.indexOf('Telephone Number') >= 0).to.be.true;
+      expect(element.$$('paper-textarea')).to.exist;
     });
 
     test('does have terms-transformer', function() {
@@ -216,7 +221,8 @@ limitations under the License.
       expect(element.searchParameters.phone).to.deep.equal({});
     });
 
-    test('_createSearchListener.onClick does set searchParameters.phone and clear _termsInput', function() {
+    test('_createSearchListener.onClick does set searchParameters.phone and clear both _files and _termsInput', function() {
+      element._files = [{}];
       element._termsInput = '1234567890\n1112223333';
       element._cleanInput = true;
       var listener = element._createSearchListener();
@@ -240,6 +246,7 @@ limitations under the License.
           text: '1112223333'
         }
       });
+      expect(element._files).to.deep.equal([]);
       expect(element._termsInput).to.equal('');
     });
 
@@ -332,12 +339,14 @@ limitations under the License.
       expect(element._termsInput).to.equal('');
     });
 
-    test('_createResetListener.onClick does clear _termsInput', function() {
+    test('_createResetListener.onClick does clear _files and _termsInput', function() {
+      element._files = [{}];
       element._termsInput = '1234567890';
       var listener = element._createResetListener();
       expect(listener).to.be.an('Object');
       expect(listener.onClick).to.be.a('Function');
       listener.onClick();
+      expect(element._files).to.deep.equal([]);
       expect(element._termsInput).to.equal('');
     });
 

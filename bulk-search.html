@@ -16,16 +16,17 @@ limitations under the License.
 
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../button-action/button-action.html">
-<link rel="import" href="../vaadin-upload/vaadin-upload.html">
 <link rel="import" href="../fontawesome-iconset/fa-all.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../lodash-import/lodash.html">
 <link rel="import" href="../paper-input/paper-textarea.html">
 <link rel="import" href="../paper-toggle-button/paper-toggle-button.html">
-<link rel="import" href="../styled-dialog/styled-dialog.html">
-<link rel="import" href="../terms-transformer/terms-transformer.html">
 <link rel="import" href="../phone-behavior/phone-behavior.html">
-<link rel="import" href="../lodash/dist/lodash.js">
+<link rel="import" href="../styled-dialog/styled-dialog.html">
+<link rel="import" href="../styled-dialog/styled-dialog-styles.html">
+<link rel="import" href="../terms-transformer/terms-transformer.html">
+<link rel="import" href="../vaadin-upload/vaadin-upload.html">
 
 <!--
 A Polymer element that allows multiple searches simultaneously.
@@ -91,7 +92,8 @@ var searchFields = [{
 
 <dom-module id="bulk-search">
   <template>
-    <style include="iron-flex"></style>
+    <style include="iron-flex iron-flex-alignment"></style>
+    <style include="styled-dialog-styles"></style>
 
     <style>
       :host {
@@ -99,7 +101,11 @@ var searchFields = [{
       }
 
       iron-icon {
-        padding: 8px;
+        --iron-icon-height: 30px;
+        --iron-icon-width: 30px;
+        --iron-icon: {
+          padding: 0 10px;
+        }
       }
 
       .hide {
@@ -122,28 +128,21 @@ var searchFields = [{
       }
 
       paper-item {
+        --paper-item-min-height: 30px;
         --paper-item: {
           cursor: pointer;
+          padding: 0 10px;
           white-space: nowrap;
         }
       }
 
-      /* Apply DIG Element button styling to the file upload button. */
-      file-upload ::content paper-button {
-        @apply(--shadow-elevation-4dp);
-        font-size: 14px;
-        line-height: 20px;
-        margin: 0;
-        padding: 5px 10px;
+      paper-textarea {
+        width: 99%;
       }
 
-      /* Apply DIG Element button styling to the file upload button. */
-      file-upload ::content paper-button:hover {
-        @apply(--shadow-elevation-8dp);
-      }
-
-      file-upload ::content #UploadBorder {
-        margin: 10px;
+      vaadin-upload {
+        margin: 20px 0;
+        padding: 20px;
       }
 
       button-action.active ::content paper-button {
@@ -191,23 +190,18 @@ var searchFields = [{
 
       <div class="styled-dialog-divider"></div>
 
-      <paper-textarea label="Enter or Paste Search Terms" value="{{_termsInput}}" no-label-float on-input="_handleParameterKeyOrTermsInputChange"></paper-textarea>
+      <paper-textarea placeholder="Enter or Paste Search Terms" value="{{_termsInput}}" on-input="_handleParameterKeyOrTermsInputChange"></paper-textarea>
+
+      <vaadin-upload
+        files="{{_files}}"
+        method="POST"
+        target="/upload"
+        on-upload-success="_setTermsInputWithFileText">
+      </vaadin-upload>
 
       <div class="layout horizontal center">
-        <vaadin-upload
-          id="fileUpload"
-          method="POST"
-          raised
-          target="localhost:9000/upload"
-          upload-success="_setTermsInputWithFileText">
-        </vaadin-upload>
-
-        <span class="styled-dialog-text">[[_uploadText]]</span>
-      </div>
-
-      <div class="layout horizontal">
         <button-action
-          class$="styled-dialog-tall styled-dialog-right-space [[_getButtonStyleClass('clean', _cleanInput, parameterKey, _termsInput)]]"
+          class$="styled-dialog-right-space [[_getButtonStyleClass('clean', _cleanInput, parameterKey, _termsInput)]]"
           disabled="[[_disableCleanButton(parameterKey, _termsInput)]]"
           icon="fa:wrench"
           text="Clean"
@@ -215,7 +209,7 @@ var searchFields = [{
         </button-action>
 
         <button-action
-          class$="styled-dialog-tall styled-dialog-right-space [[_getButtonStyleClass('search', _cleanInput, parameterKey, _termsInput)]]"
+          class$="styled-dialog-right-space [[_getButtonStyleClass('search', _cleanInput, parameterKey, _termsInput)]]"
           disabled="[[!_cleanInput]]"
           icon="fa:search"
           text="Search"
@@ -223,17 +217,17 @@ var searchFields = [{
         </button-action>
 
         <button-action
-          class="styled-dialog-tall styled-dialog-right-space"
+          class="styled-dialog-right-space"
           icon="fa:undo"
           text="Reset"
           click-listener="[[_createResetListener()]]">
         </button-action>
 
         <iron-icon class$="[[_getWarningMessageStyleClass(parameterKey, _termsInput)]]" icon="icons:warning"></iron-icon>
-        <span class$="styled-dialog-tall styled-dialog-text [[_getWarningMessageStyleClass(parameterKey, _termsInput)]]">You must select a Field before you may Search.</span>
+        <span class$="styled-dialog-text [[_getWarningMessageStyleClass(parameterKey, _termsInput)]]">You must select a Field before you may Search.</span>
 
         <iron-icon class$="[[_getWarningMessageStyleClass(_cleanInput, _termsInput)]]" icon="icons:warning"></iron-icon>
-        <span class$="styled-dialog-tall styled-dialog-text [[_getWarningMessageStyleClass(_cleanInput, _termsInput)]]">You must Clean before you may Search.</span>
+        <span class$="styled-dialog-text [[_getWarningMessageStyleClass(_cleanInput, _termsInput)]]">You must Clean before you may Search.</span>
       </div>
     </styled-dialog>
   </template>
@@ -249,22 +243,7 @@ var searchFields = [{
 
       behaviors: [DigBehaviors.PhoneBehavior],
 
-      ready: function () {
-        var uploader = this.$$('#fileUpload');
-        uploader.clear = function () {
-          while(this.files.length) {
-            this._removeFile(this.files[0]);
-          }
-        };
-
-        uploader.listeners['upload-success'] = '_onUploadSuccess';
-        uploader._onUploadSuccess = function(event) {
-          console.log(event);
-          this._setTermsInputWithFileText();
-        }
-      },
       properties: {
-
         /**
          * Builds and returns the search state object from the given config object.
          *
@@ -358,6 +337,16 @@ var searchFields = [{
         },
 
         /**
+         * The uploaded files.
+         *
+         * @type {Array}
+         * @private
+         */
+        _files: {
+          type: Array
+        },
+
+        /**
          * Whether to reset all the searchParameters whenever a search is run.
          *
          * @type {Boolean}
@@ -387,18 +376,6 @@ var searchFields = [{
          * @private
          */
         _termsInput: {
-          type: String,
-          value: ''
-        },
-
-        /**
-         * The text to show about a file upload.
-         *
-         * @type {String}
-         * default ''
-         * @private
-         */
-        _uploadText: {
           type: String,
           value: ''
         }
@@ -452,8 +429,7 @@ var searchFields = [{
               }
               self.set('processRequest', true);
               self.set('_termsInput', '');
-              self.set('_uploadText', '');
-              self.$$('#fileUpload').clear();
+              self.set('_files', []);
             }
           }
         };
@@ -469,10 +445,9 @@ var searchFields = [{
         var self = this;
         return {
           onClick: function() {
-            self.set('_uploadText', '');
             self.set('_termsInput', '');
             self.set('_cleanInput', false);
-            self.$$('#fileUpload').clear();
+            self.set('_files', []);
           }
         };
       },
