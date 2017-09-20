@@ -165,7 +165,7 @@ var searchFields = [{
 
     <terms-transformer category="[[_getCategory(searchFields, searchFieldsKeyProperty, searchFieldsTitleProperty, parameterKey)]]" search-default-value="optional"></terms-transformer>
 
-    <styled-dialog id="bulkSearchDialog" header="Upload or Enter Search Terms" fill>
+    <styled-dialog id="bulkSearchDialog" header="Bulk Search from Uploaded File or Text" fill>
       <div class="layout horizontal">
         <div class="layout vertical styled-dialog-right-space">
           <span class="styled-dialog-name styled-dialog-tall styled-dialog-right-space">Instructions</span>
@@ -432,7 +432,6 @@ var searchFields = [{
               if(self._resetTerms) {
                 var parameters = {};
                 parameters[self.parameterKey] = termsParameter;
-                // From DigBehaviors.StateBehavior
                 self.set('searchParameters', self.buildSearchState(parameters, self.searchParameters));
               } else {
                 self.set('searchParameters.' + self.parameterKey, termsParameter);
