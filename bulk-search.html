@@ -207,7 +207,7 @@ var searchFields = [{
       <vaadin-upload
         files="{{_files}}"
         method="POST"
-        target="/upload"
+        target="[[uploadEndpoint]]"
         on-upload-success="_setTermsInputWithFileText">
       </vaadin-upload>
 
@@ -334,6 +334,17 @@ var searchFields = [{
         searchParameters: {
           notify: true,
           type: Object
+        },
+
+        /**
+         * The file upload endpoint.
+         *
+         * @type {String}
+         * @default '/upload'
+         */
+        uploadEndpoint: {
+          type: String,
+          value: '/upload'
         },
 
         /**

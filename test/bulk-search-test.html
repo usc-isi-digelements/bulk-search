@@ -79,6 +79,7 @@ limitations under the License.
         email: {},
         phone: {}
       });
+      expect(element.uploadEndpoint).to.equal('/upload');
       expect(element._cleanInput).to.be.false;
       expect(element._resetTerms).to.be.true;
       expect(element._sortedSearchFields).to.deep.equal([{
