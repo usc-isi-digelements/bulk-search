@@ -104,18 +104,9 @@ limitations under the License.
       expect(element.$$('vaadin-upload').target).to.equal('/upload');
     });
 
-    test('does have expected paper elements', function() {
-      expect(element.$$('paper-dropdown-menu')).to.exist;
-      expect(element.$$('paper-listbox')).to.exist;
-      var items = Polymer.dom(element.root).querySelectorAll('paper-item');
-      expect(items.length).to.equal(2);
-      expect(items[0].id).to.equal('email');
-      expect(items[0].value).to.equal('email');
-      expect(items[0].innerHTML.indexOf('Email Address') >= 0).to.be.true;
-      expect(items[1].id).to.equal('phone');
-      expect(items[1].value).to.equal('phone');
-      expect(items[1].innerHTML.indexOf('Telephone Number') >= 0).to.be.true;
-      expect(element.$$('paper-textarea')).to.exist;
+    test('does have expected input elements', function() {
+      expect(element.$$('dropdown-menu')).to.exist;
+      expect(element.$$('iron-autogrow-textarea')).to.exist;
     });
 
     test('does have terms-transformer', function() {
