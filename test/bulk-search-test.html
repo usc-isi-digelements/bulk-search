@@ -116,13 +116,41 @@ limitations under the License.
       expect(element.$$('terms-transformer').searchDefaultValue).to.equal('optional');
     });
 
-    test('does have expected behaviors', function() {
-      expect(element.buildSearchState).to.be.a('Function');
-      expect(element.getUnformattedPhones).to.be.a('Function');
-    });
-
     test('_createCleanListener.onClick does nothing if _termsInput is blank', function() {
       element._termsInput = '';
+      element._cleanInput = false;
+      var listener = element._createCleanListener();
+      expect(listener).to.be.an('Object');
+      expect(listener.onClick).to.be.a('Function');
+      listener.onClick();
+      expect(element._cleanInput).to.be.false;
+      expect(element._termsInput).to.equal('');
+    });
+
+    test('_createCleanListener.onClick does nothing if _termsInput is newlines', function() {
+      element._termsInput = '\n\n';
+      element._cleanInput = false;
+      var listener = element._createCleanListener();
+      expect(listener).to.be.an('Object');
+      expect(listener.onClick).to.be.a('Function');
+      listener.onClick();
+      expect(element._cleanInput).to.be.false;
+      expect(element._termsInput).to.equal('');
+    });
+
+    test('_createCleanListener.onClick does nothing if _termsInput is spaces', function() {
+      element._termsInput = '  ';
+      element._cleanInput = false;
+      var listener = element._createCleanListener();
+      expect(listener).to.be.an('Object');
+      expect(listener.onClick).to.be.a('Function');
+      listener.onClick();
+      expect(element._cleanInput).to.be.false;
+      expect(element._termsInput).to.equal('');
+    });
+
+    test('_createCleanListener.onClick does nothing if _termsInput is tabs', function() {
+      element._termsInput = '\t\t';
       element._cleanInput = false;
       var listener = element._createCleanListener();
       expect(listener).to.be.an('Object');

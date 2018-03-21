@@ -1,7 +1,7 @@
 {
   "name": "bulk-search",
   "description": "A Polymer element that allows multiple searches simultaneously.",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "authors": [
     "Next Century Corporation"
   ],
@@ -18,7 +18,7 @@
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.2",
-    "button-action": "DigElements/button-action#2.0.1",
+    "button-action": "DigElements/button-action#2.0.4",
     "dropdown-menu": "DigElements/dropdown-menu#2.0.1",
     "fontawesome-iconset": "https://github.com/vangware/fontawesome-iconset.git#09ac70f619bb44d73fefc5f9524ae29ab217ed15",
     "iron-autogrow-textarea": "PolymerElements/iron-autogrow-textarea#^2.0.0",
@@ -28,9 +28,8 @@
     "lodash-import": "DigElements/lodash-import#~1.0.1",
     "paper-icon-button": "PolymerElements/paper-icon-button#^2.0.0",
     "paper-input": "PolymerElements/paper-input#^2.0.0",
-    "phone-behavior": "DigElements/phone-behavior#1.0.0",
-    "styled-dialog": "DigElements/styled-dialog#2.1.4",
-    "terms-transformer": "DigElements/terms-transformer#2.0.0",
+    "styled-dialog": "DigElements/styled-dialog#2.1.5",
+    "terms-transformer": "DigElements/terms-transformer#2.1.0",
     "vaadin-upload": "vaadin/vaadin-upload#2.1.0"
   },
   "devDependencies": {

@@ -22,7 +22,6 @@ limitations under the License.
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../lodash-import/lodash.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../phone-behavior/phone-behavior.html">
 <link rel="import" href="../styled-dialog/styled-dialog.html">
 <link rel="import" href="../styled-dialog/styled-dialog-styles.html">
 <link rel="import" href="../terms-transformer/terms-transformer.html">
@@ -86,7 +85,6 @@ var searchFields = [{
 </bulk-search>
 ```
 
-
 @demo demo/index.html
 -->
 
@@ -124,16 +122,20 @@ var searchFields = [{
       }
 
       iron-autogrow-textarea {
-        width: 99%;
+        border: unset;
+        display: block;
+        padding: 0;
+        --iron-autogrow-textarea: {
+          background-color: var(--paper-grey-100);
+          padding: 5px;
+        }
+        /* Subtract the padding for the inner textarea. */
+        height: calc(100% - 10px);
+        width: calc(100% - 10px);
       }
 
       vaadin-upload {
-        margin: 20px 0;
         padding: 20px;
-      }
-
-      button-action.active ::content paper-button {
-        background-color: #00ff00;
       }
 
       .warning.message {
@@ -226,11 +228,7 @@ var searchFields = [{
     'use strict';
 
     Polymer({
-      /* globals DigBehaviors */
-
       is: 'bulk-search',
-
-      behaviors: [DigBehaviors.PhoneBehavior],
 
       properties: {
         /**
@@ -392,12 +390,12 @@ var searchFields = [{
         return {
           onClick: function() {
             if(self.parameterKey && self._termsInput) {
-              // TODO Clean other types?
+              self._termsInput = self._termsInput.trim();
+              // TODO Move out of element!
               if(self.parameterKey === 'phone') {
-                // From DigBehaviors.PhoneBehavior
-                self._termsInput = self.getUnformattedPhones(self._termsInput);
+                self._termsInput = self._unformatPhones(self._termsInput);
               }
-              self._cleanInput = true;
+              self._cleanInput = !!self._termsInput;
             }
           }
         };
@@ -587,6 +585,23 @@ var searchFields = [{
        */
       _toggleResetTerms: function() {
         this.set('_resetTerms', !this._resetTerms);
+      },
+
+      /**
+       * Returns a string of unformatted phones separated by newlines.
+       *
+       * @param {String} phone
+       * @return {String}
+       * @private
+       */
+      _unformatPhones: function(phone) {
+        // Replace all delimiters (whitespace, commas, and, semicolons) with single spaces.
+        return phone.replace(/[\s,;]/g, ' ')
+          // Remove all non-digit, non-whitespace characters.
+          .replace(/[^\d\s]/g, '')
+          // Remove extra spaces.
+          .replace(/\s+/g, '\n')
+          .trim();
       },
 
       /**
