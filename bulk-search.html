@@ -17,13 +17,13 @@ limitations under the License.
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../button-action/button-action.html">
 <link rel="import" href="../fontawesome-iconset/fa-all.html">
+<link rel="import" href="../icon-button/icon-button.html">
 <link rel="import" href="../iron-autogrow-textarea/iron-autogrow-textarea.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../lodash-import/lodash.html">
-<link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../styled-dialog/styled-dialog.html">
 <link rel="import" href="../styled-dialog/styled-dialog-styles.html">
+<link rel="import" href="../stylized-icon/stylized-icon.html">
 <link rel="import" href="../terms-transformer/terms-transformer.html">
 <link rel="import" href="../vaadin-upload/vaadin-upload.html">
 
@@ -98,12 +98,8 @@ var searchFields = [{
         display: block;
       }
 
-      iron-icon {
-        --iron-icon-height: 30px;
-        --iron-icon-width: 30px;
-        --iron-icon: {
-          padding: 0 10px;
-        }
+      stylized-icon {
+        margin: 0 10px;
       }
 
       .hide {
@@ -112,13 +108,6 @@ var searchFields = [{
 
       .pointer > * {
         cursor: pointer;
-      }
-
-      paper-icon-button {
-        border-radius: 50%;
-        padding: 5px;
-        height: 30px;
-        width: 30px;
       }
 
       iron-autogrow-textarea {
@@ -139,7 +128,7 @@ var searchFields = [{
       }
 
       .warning.message {
-        color: #ff0000;
+        --stylized-icon-color: #ff0000;
       }
     </style>
 
@@ -173,7 +162,15 @@ var searchFields = [{
 
       <template is="dom-if" if="[[!disableResetFields]]">
         <div class="layout horizontal center pointer styled-dialog-tall">
-          <paper-icon-button class="styled-dialog-right-space" icon="[[_getCheckboxIcon(_resetTerms)]]" title="Reset Search Terms" on-tap="_toggleResetTerms"></paper-icon-button>
+          <icon-button
+            active="[[_resetTerms]]"
+            bigger
+            class="styled-dialog-right-space"
+            icon="[[_getCheckboxIcon(_resetTerms)]]"
+            padded
+            title-tooltip="Reset Search Terms"
+            on-tap="_toggleResetTerms">
+          </icon-button>
           <span class="styled-dialog-text styled-dialog-right-space" on-tap="_toggleResetTerms">Reset Search Terms</span>
         </div>
       </template>
@@ -214,10 +211,10 @@ var searchFields = [{
           click-listener="[[_createResetListener()]]">
         </button-action>
 
-        <iron-icon class$="[[_getWarningMessageStyleClass(parameterKey, _termsInput)]]" icon="icons:warning"></iron-icon>
+        <stylized-icon class$="[[_getWarningMessageStyleClass(parameterKey, _termsInput)]]" icon="icons:warning"></stylized-icon>
         <span class$="styled-dialog-text [[_getWarningMessageStyleClass(parameterKey, _termsInput)]]">You must select a Field before you may Search.</span>
 
-        <iron-icon class$="[[_getWarningMessageStyleClass(_cleanInput, _termsInput)]]" icon="icons:warning"></iron-icon>
+        <stylized-icon class$="[[_getWarningMessageStyleClass(_cleanInput, _termsInput)]]" icon="icons:warning"></stylized-icon>
         <span class$="styled-dialog-text [[_getWarningMessageStyleClass(_cleanInput, _termsInput)]]">You must Clean before you may Search.</span>
       </div>
     </styled-dialog>
