@@ -1,39 +1,33 @@
 {
   "name": "bulk-search",
-  "description": "A Polymer element that allows multiple searches simultaneously.",
+  "description":
+    "A Polymer element that allows multiple searches simultaneously.",
   "version": "2.1.5",
-  "authors": [
-    "Next Century Corporation"
-  ],
+  "authors": ["Next Century Corporation"],
   "license": "Apache-2.0",
-  "keywords": [
-    "web-component",
-    "polymer"
-  ],
+  "keywords": ["web-component", "polymer"],
   "main": "bulk-search.html",
-  "homepage": "https://github.com/DigElements/bulk-search/",
-  "ignore": [
-    "/.*",
-    "/test/"
-  ],
+  "homepage": "https://github.com/usc-isi-digelements/bulk-search/",
+  "ignore": ["/.*", "/test/"],
   "dependencies": {
     "polymer": "Polymer/polymer#2.5.0",
-    "button-action": "DigElements/button-action#2.0.4",
-    "dropdown-menu": "DigElements/dropdown-menu#2.0.1",
-    "fontawesome-iconset": "https://github.com/vangware/fontawesome-iconset.git#09ac70f619bb44d73fefc5f9524ae29ab217ed15",
-    "icon-button": "DigElements/icon-button#2.0.1",
+    "button-action": "usc-isi-digelements/button-action#2.0.4",
+    "dropdown-menu": "usc-isi-digelements/dropdown-menu#2.0.1",
+    "fontawesome-iconset": "../fontawesome",
+    "icon-button": "usc-isi-digelements/icon-button#2.0.1",
     "iron-autogrow-textarea": "PolymerElements/iron-autogrow-textarea#^2.0.0",
     "iron-flex-layout": "PolymerElements/iron-flex-layout#2.0.0",
-    "lodash-import": "DigElements/lodash-import#~1.0.1",
+    "lodash-import": "usc-isi-digelements/lodash-import#~1.0.1",
     "paper-input": "PolymerElements/paper-input#^2.0.0",
-    "styled-dialog": "DigElements/styled-dialog#2.2.0",
-    "stylized-icon": "DigElements/stylized-icon#2.0.0",
-    "terms-transformer": "DigElements/terms-transformer#2.1.0",
+    "styled-dialog": "usc-isi-digelements/styled-dialog#2.2.0",
+    "stylized-icon": "usc-isi-digelements/stylized-icon#2.0.0",
+    "terms-transformer": "usc-isi-digelements/terms-transformer#2.1.0",
     "vaadin-upload": "vaadin/vaadin-upload#2.1.0"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
-    "selected-facets-display": "DigElements/selected-facets-display#^2.0.4",
+    "selected-facets-display":
+      "usc-isi-digelements/selected-facets-display#^2.0.4",
     "web-component-tester": "^6.0.0"
   }
 }
