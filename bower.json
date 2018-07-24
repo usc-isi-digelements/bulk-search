@@ -2,7 +2,7 @@
   "name": "bulk-search",
   "description":
     "A Polymer element that allows multiple searches simultaneously.",
-  "version": "2.1.5",
+  "version": "2.1.6",
   "authors": ["Next Century Corporation"],
   "license": "Apache-2.0",
   "keywords": ["web-component", "polymer"],
@@ -10,24 +10,24 @@
   "homepage": "https://github.com/usc-isi-digelements/bulk-search/",
   "ignore": ["/.*", "/test/"],
   "dependencies": {
-    "polymer": "Polymer/polymer#2.5.0",
-    "button-action": "usc-isi-digelements/button-action#2.0.4",
-    "dropdown-menu": "usc-isi-digelements/dropdown-menu#2.0.1",
+    "polymer": "Polymer/polymer#^2.5.0",
+    "button-action": "usc-isi-digelements/button-action#^2.0.4",
+    "dropdown-menu": "usc-isi-digelements/dropdown-menu#^2.0.1",
     "fontawesome-iconset": "../fontawesome",
-    "icon-button": "usc-isi-digelements/icon-button#2.0.1",
+    "icon-button": "usc-isi-digelements/icon-button#^2.0.2",
     "iron-autogrow-textarea": "PolymerElements/iron-autogrow-textarea#^2.0.0",
-    "iron-flex-layout": "PolymerElements/iron-flex-layout#2.0.0",
-    "lodash-import": "usc-isi-digelements/lodash-import#~1.0.1",
+    "iron-flex-layout": "PolymerElements/iron-flex-layout#^2.0.0",
+    "lodash-import": "usc-isi-digelements/lodash-import#^1.0.1",
     "paper-input": "PolymerElements/paper-input#^2.0.0",
-    "styled-dialog": "usc-isi-digelements/styled-dialog#2.2.0",
-    "stylized-icon": "usc-isi-digelements/stylized-icon#2.0.0",
-    "terms-transformer": "usc-isi-digelements/terms-transformer#2.1.0",
-    "vaadin-upload": "vaadin/vaadin-upload#2.1.0"
+    "styled-dialog": "usc-isi-digelements/styled-dialog#^2.2.2",
+    "stylized-icon": "usc-isi-digelements/stylized-icon#^2.0.1",
+    "terms-transformer": "usc-isi-digelements/terms-transformer#^2.1.0",
+    "vaadin-upload": "vaadin/vaadin-upload#^2.1.0"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
     "selected-facets-display":
-      "usc-isi-digelements/selected-facets-display#^2.0.4",
+      "usc-isi-digelements/selected-facets-display#^3f7b01b42197ce916c9e0cfff2f2965d7ca3205c",
     "web-component-tester": "^6.0.0"
   }
 }
