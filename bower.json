@@ -2,7 +2,7 @@
   "name": "bulk-search",
   "description":
     "A Polymer element that allows multiple searches simultaneously.",
-  "version": "2.1.6",
+  "version": "2.1.7",
   "authors": ["Next Century Corporation"],
   "license": "Apache-2.0",
   "keywords": ["web-component", "polymer"],
