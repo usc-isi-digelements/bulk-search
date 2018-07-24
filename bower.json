@@ -27,7 +27,7 @@
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
     "selected-facets-display":
-      "usc-isi-digelements/selected-facets-display#^3f7b01b42197ce916c9e0cfff2f2965d7ca3205c",
+      "usc-isi-digelements/selected-facets-display#^2.1.0",
     "web-component-tester": "^6.0.0"
   }
 }
