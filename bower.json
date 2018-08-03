@@ -2,7 +2,7 @@
   "name": "bulk-search",
   "description":
     "A Polymer element that allows multiple searches simultaneously.",
-  "version": "2.1.7",
+  "version": "2.1.8",
   "authors": ["Next Century Corporation"],
   "license": "Apache-2.0",
   "keywords": ["web-component", "polymer"],
@@ -13,7 +13,8 @@
     "polymer": "Polymer/polymer#^2.5.0",
     "button-action": "usc-isi-digelements/button-action#^2.0.4",
     "dropdown-menu": "usc-isi-digelements/dropdown-menu#^2.0.1",
-    "fontawesome-iconset": "../fontawesome",
+    "fontawesome-iconset":
+      "NextCenturyCorporation/polymer-fontawesome-iconset#d2afc78a06295aacfd8a434e0dfa54164715529e",
     "icon-button": "usc-isi-digelements/icon-button#^2.0.2",
     "iron-autogrow-textarea": "PolymerElements/iron-autogrow-textarea#^2.0.0",
     "iron-flex-layout": "PolymerElements/iron-flex-layout#^2.0.0",
